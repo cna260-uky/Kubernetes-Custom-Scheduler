@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-deployment2
+spec:
+  selector:
+    matchLabels:
+      app: workload
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: workload
+    spec:
+      schedulerName: drf
+      containers:
+      - name: wl-container2
+        image: 128.105.146.5:5001/workload:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: 300m
+            memory: 750Mi
+          requests:
+            cpu: 250m
+            memory: 500Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wl-service2
+spec:
+  selector:
+    app: workload
+  ports:
+  - protocol: "TCP"
+    port: 6060
+    targetPort: 5000
+  type: LoadBalancer
